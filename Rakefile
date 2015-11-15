@@ -9,17 +9,12 @@ require_relative 'spec/rspec/expectations/expectation_spec_loader'
 require_relative 'spec/rspec/support/support_spec_loader'
 require_relative 'spec/rspec/mocks/mocks_spec_loader'
 
-task :default => [:phantom_node_ver,
-                  :unit_specs,
-                  :verify_opal_specs,
-                  :integration_specs,
-                  :verify_rspec_specs]
-
-task :phantom_node_ver do
-  sh 'phantomjs -v'
-  sh 'node -v'
-  sh 'firefox --version'
-end
+task :default => [
+  :unit_specs,
+  :verify_opal_specs,
+  :integration_specs,
+  :verify_rspec_specs,
+]
 
 desc 'Runs a set of specs in opal'
 Opal::RSpec::RakeTask.new(:opal_specs) do |_, task|
