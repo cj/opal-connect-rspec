@@ -16,18 +16,7 @@ module ::RSpec::Core
         # gets the right IO, but need to do this in config for custom
         # formatters that will be constructed BEFORE this runs, see rspec.rb
         run(ARGV, err, out).then do |status|
-          exit_with_code status.to_i
-        end
-      end
-
-      def exit_with_code(code)
-        # have to ignore OPAL_SPEC_PHANTOM for this one
-        if `typeof(phantom) !== "undefined"`
-          `phantom_exit(#{code})`
-        elsif node?
-          `process.exit(#{code})`
-        else
-          `Opal.global.OPAL_SPEC_CODE = #{code}`
+          exit(status.to_i)
         end
       end
 
