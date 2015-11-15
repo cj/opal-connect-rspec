@@ -14,6 +14,13 @@ Add `opal-rspec` to your Gemfile:
 gem 'opal-rspec'
 ```
 
+If you want to try the master version (at your own peril) remember to fetch submodules too:
+
+```ruby
+gem 'opal-rspec',  github: 'opal/opal-rspec', submodules: true
+```
+
+
 ## Requirements
 
 Besides what's already reflected in the GEM dependencies:
