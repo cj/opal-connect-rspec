@@ -23,7 +23,7 @@ module Opal
       end
 
       def runner
-        ((via_env = ENV['RUNNER']) && via_env.to_sym) || @runner || :phantom
+        (ENV['RUNNER'] || @runner || :phantom).to_sym
       end
 
       def get_load_asset_code(server)
