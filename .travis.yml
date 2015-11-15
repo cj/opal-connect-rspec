@@ -9,17 +9,13 @@ matrix:
 
   include:
     - rvm: 1.9.3
-      env: RUN=default
+      env: RUN=default RUNNER=node
     - rvm: 2.0.0
-      env: RUN=default
-    - rvm: 2.1.0
-      env: RUN=default
-    - rvm: 2.2.3
-      env: RUN=default
-    - rvm: 2.2.3
+      env: RUN=default RUNNER=phantom PHANTOMJS=1.9
+    - rvm: 2.1.5
       # PHANTOMJS env variable is not used but it makes it easier to differentiate this build in Travis
       # https://github.com/travis-ci/travis-ci/issues/3225 - Easiest way to use 2.0 on Travis
-      env: RUN=default PHANTOMJS=2.0
+      env: RUN=default RUNNER=phantom PHANTOMJS=2.0
       before_script:
         - "mkdir phantom20"
         - "export PATH=`pwd`/phantom20:$PATH"
@@ -33,8 +29,6 @@ matrix:
         - "sh -e /etc/init.d/xvfb start"
     - rvm: 2.2.3
       env: RUN=default RUNNER=node
-    - rvm: 2.2.3
-      env: RUN=default
       gemfile: gemfiles/opal_master.gemfile
 
 before_install:
