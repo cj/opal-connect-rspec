@@ -18,4 +18,7 @@ Gem::Specification.new do |s|
   s.add_dependency 'opal', ['>= 0.8.0', '< 0.10']
   s.add_development_dependency 'rake'
   s.add_development_dependency 'yard'
+  s.add_development_dependency 'capybara', '~> 2.5.0'
+  s.add_development_dependency 'capybara-webkit'
+  s.add_development_dependency 'selenium-webdriver'
 end
