@@ -65,9 +65,11 @@ module Opal
           tries += 1
           sleep 0.1
           begin
-            # Using TCPSocket, not net/http open because executing the HTTP GET / will incur a decent delay just to check if the server is up
-            # in order to better communicate to the user what is going on, save the actual HTTP request for the phantom/node run
-            # the only objective here is to see if the Rack server has started
+            # Using TCPSocket, not net/http open because executing
+            # the HTTP GET / will incur in a decent delay just to check if the
+            # server is up in order to better communicate to the user what is
+            # going on, save the actual HTTP request for the phantom/node run
+            # the only objective here is to see if the Rack server has started.
             socket = TCPSocket.new uri.hostname, uri.port
             up = true
             socket.close
@@ -98,7 +100,9 @@ module Opal
             sprockets_env.add_spec_paths_to_sprockets
           }
 
-          # TODO: Once Opal 0.9 compatibility is established, if we're running node, add in the node stdlib requires in so RSpec can use them, also add NODE_PATH to the runner command above
+          # TODO: Once Opal 0.9 compatibility is established, if we're running
+          # node, add in the node stdlib requires in so RSpec can use them,
+          # also add NODE_PATH to the runner command above
 
           server = Thread.new do
             Thread.current.abort_on_exception = true
