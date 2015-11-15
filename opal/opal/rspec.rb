@@ -7,8 +7,15 @@ require 'opal/rspec/async'
 
 phantomjs = `typeof(callPhantom) !== "undefined"`
 browser   = `typeof(document) !== "undefined"`
+node      = `typeof(process) !== "undefined" && process.versions && process.versions.node`
 
-require 'phantomjs' if phantomjs
+case
+when phantomjs
+  require 'phantomjs'
+when node
+  require 'nodejs/kernel'
+  require 'nodejs/io'
+end
 
 RSpec.configure do |config|
   # Set the HTML formatter as default when window.document is present, except
