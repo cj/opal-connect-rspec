@@ -10,7 +10,8 @@ class OpalClosedTtyIO < IO
     @tty = true
   end
 
-  # We're deferring to stdout here, which doesn't need to be closed, but RSpec::BaseTextFormatter doesn't know that, so override this
+  # We're deferring to stdout here, which doesn't need to be closed, but
+  # RSpec::BaseTextFormatter doesn't know that, so override this
   def closed?
     true
   end

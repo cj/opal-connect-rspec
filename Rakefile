@@ -58,11 +58,11 @@ Opal::RSpec::MocksSpecLoader.rake_tasks_for(:rspec_mocks_specs)
 # These are done
 desc 'Verifies all RSpec specs'
 task :verify_rspec_specs => [
-         :verify_rspec_support_specs,
-         :verify_rspec_core_specs,
-         :verify_rspec_expectation_specs,
-         :verify_rspec_mocks_specs
-     ]
+  :verify_rspec_support_specs,
+  :verify_rspec_core_specs,
+  :verify_rspec_expectation_specs,
+  :verify_rspec_mocks_specs
+]
 
 desc 'Verifies other_spec_dir task ran correctly'
 task :verify_other_specs do
