@@ -15,10 +15,6 @@ module ::RSpec::Core
         `typeof(process) !== 'undefined' && typeof(process.versions) !== 'undefined'`
       end
 
-      def non_browser?
-        phantom? || node?
-      end
-
       def get_opal_closed_tty_io
         runner_type = if phantom?
                         :phantom

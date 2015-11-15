@@ -6,9 +6,11 @@ require 'opal/rspec/runner'
 require 'opal/rspec/async'
 
 RSpec.configure do |config|
-  config.default_formatter = ::RSpec::Core::Runner.non_browser? ?
-                               ::RSpec::Core::Formatters::ProgressFormatter :
-                               ::Opal::RSpec::BrowserFormatter
+  # Set the HTML formatter as default when window.document is present, except
+  # for known headless browsers like PhantomJS.
+  if `typeof(document) !== "undefined"` && !RSpec::Core::Runner.phantom?
+    config.default_formatter = ::Opal::RSpec::BrowserFormatter
+  end
 
   # Have to do this in 2 places. This will ensure the default formatter gets
   # the right IO, but need to do this here for custom formatters that will be
