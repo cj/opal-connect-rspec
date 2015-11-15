@@ -3,30 +3,9 @@ require_relative 'formatter/opal_closed_tty_io'
 module ::RSpec::Core
   class Runner
     class << self
-      def browser?
-        `typeof(document) !== "undefined"`
-      end
-
-      def phantom?
-        `typeof(phantom) !== 'undefined' || typeof(OPAL_SPEC_PHANTOM) !== 'undefined'`
-      end
-
-      def node?
-        `typeof(process) !== 'undefined' && typeof(process.versions) !== 'undefined'`
-      end
-
       def get_opal_closed_tty_io
-        runner_type = if phantom?
-                        :phantom
-                      elsif node?
-                        :node
-                      else
-                        :browser
-                      end
-        std_out = OpalClosedTtyIO.new runner_type,
-                                      :stdout
-        std_err = OpalClosedTtyIO.new runner_type,
-                                      :stderr
+        std_out = OpalClosedTtyIO.new :stdout
+        std_err = OpalClosedTtyIO.new :stderr
         [std_err, std_out]
       end
 

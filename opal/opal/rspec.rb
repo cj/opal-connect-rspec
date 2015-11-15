@@ -5,18 +5,22 @@ require 'opal/rspec/formatter/browser_formatter'
 require 'opal/rspec/runner'
 require 'opal/rspec/async'
 
+phantomjs = `typeof(callPhantom) !== "undefined"`
+browser   = `typeof(document) !== "undefined"`
+
+require 'phantomjs' if phantomjs
+
 RSpec.configure do |config|
   # Set the HTML formatter as default when window.document is present, except
   # for known headless browsers like PhantomJS.
-  if `typeof(document) !== "undefined"` && !RSpec::Core::Runner.phantom?
-    config.default_formatter = ::Opal::RSpec::BrowserFormatter
-  end
+  config.default_formatter = ::Opal::RSpec::BrowserFormatter if browser && !phantomjs
 
   # Have to do this in 2 places. This will ensure the default formatter gets
   # the right IO, but need to do this here for custom formatters that will be
   # constructed BEFORE Runner.autorun runs (see runner.rb)
-  _, stdout = ::RSpec::Core::Runner.get_opal_closed_tty_io
-  config.output_stream = stdout
+  err, out = ::RSpec::Core::Runner.get_opal_closed_tty_io
+  config.output_stream = out
+  config.error_stream = err
 
   # This shouldn't be in here, but RSpec uses undef to change this
   # configuration and that doesn't work well enough yet
