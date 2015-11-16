@@ -1,3 +1,5 @@
+ENV['SPEC_OPTS'] = nil # Node will pick up real env vars
+
 require 'opal/rspec/pre_require_fixes'
 require 'opal/rspec/requires'
 require 'opal/rspec/fixes'
