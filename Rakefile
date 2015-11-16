@@ -16,6 +16,35 @@ task :default => [
   :verify_rspec_specs,
 ]
 
+class Microtest
+  def initialize
+    @errors = 0
+  end
+
+  def assert condition, message
+    unless condition
+      @errors += 1
+      warn message
+    end
+  end
+
+  def success?
+    @errors == 0
+  end
+end
+
+class CommandTest
+  def initialize(command)
+    require 'tempfile'
+    Tempfile.create 'capture-output' do |file|
+      @success = system command, out: file
+      file.rewind
+      @output = file.read
+    end
+  end
+  attr_reader :output, :success
+end
+
 desc 'Runs a set of specs in opal'
 Opal::RSpec::RakeTask.new(:opal_specs) do |_, task|
   task.pattern = 'spec/opal/**/*_spec.{rb,opal}'
@@ -75,10 +104,16 @@ end
 
 desc 'Will run a spec suite (rake opal_specs) and check for expected combination of failures and successes'
 task :verify_opal_specs do
-  test_output = `rake opal_specs`
-  raise "Expected test runner to fail due to failed tests, but got return code of #{$?.exitstatus}" if $?.success?
+  test = Microtest.new
+
+  command = CommandTest.new('rake opal_specs')
+  test_output = command.output
+
+  test.assert !command.success, "Expected test runner to fail due to failed tests, but got successful return code"
+
   count_match = /(\d+) examples, (\d+) failures, (\d+) pending/.match(test_output)
-  raise 'Expected a finished count of test failures/success/etc. but did not see it' unless count_match
+  test.assert count_match, "Expected a finished count of test failures/success/etc. but did not see it in: \n#{'='*80}\n#{test_output}\n#{'='*80}"
+
   total, failed, pending = count_match.captures
 
   actual_failures = []
@@ -96,27 +131,31 @@ task :verify_opal_specs do
 
   bad_strings.each do |regex|
     test_output.scan(regex) do |match|
-      failure_messages << "Expected not to see #{regex} in output, but found match #{match}"
+      test.assert false, "Expected not to see #{regex} in output, but found match #{match}"
     end
   end
 
   expected_pending_count = 12
   expected_failures = File.read('spec/opal/expected_failures.txt').split("\n").compact.sort
 
-  if actual_failures != expected_failures
-    unexpected = actual_failures - expected_failures
-    missing = expected_failures - actual_failures
-    failure_messages << "Expected test failures do not match actual\n"
-    failure_messages << "\nUnexpected fails:\n#{unexpected.join("\n")}\n\nMissing fails:\n#{missing.join("\n")}\n\n"
-  end
+  unexpected = actual_failures - expected_failures
+  missing    = expected_failures - actual_failures
 
-  failure_messages << "Expected #{expected_pending_count} pending examples but actual was #{pending}" unless pending == expected_pending_count.to_s
+  test.assert actual_failures == expected_failures,
+    "Expected test failures do not match actual\n\n"+
+      "Unexpected fails:\n#{unexpected.join("\n")}\n\n"+
+      "Missing fails:\n#{missing.join("\n")}\n\n"
 
-  if failure_messages.empty?
+  test.assert pending == expected_pending_count.to_s, "Expected #{expected_pending_count} pending examples but actual was #{pending}"
+
+  test.assert failure_messages.empty?, "Test failed, reasons:\n\n#{failure_messages.join("\n")}\n"
+
+  if test.success?
     puts 'Test successful!'
     puts "#{total} total specs, #{failed} expected failures, #{pending} expected pending"
   else
-    raise "Test failed, reasons:\n\n#{failure_messages.join("\n")}\n"
+    warn 'Test failed!'
+    exit 1
   end
 end
 
