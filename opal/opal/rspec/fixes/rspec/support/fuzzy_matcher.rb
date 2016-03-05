@@ -1,15 +1,15 @@
 unless Opal::RSpec::Compatibility.lambda_zero_arg_throws_arg_error?
   module ::RSpec::Support::FuzzyMatcher
     def self.values_match?(expected, actual)
-      if Array === expected && Enumerable === actual && !(Struct === actual)
+      if Hash === actual
+        return hashes_match?(expected, actual) if Hash === expected
+      elsif Array === expected && Enumerable === actual && !(Struct === actual)
         return arrays_match?(expected, actual.to_a)
-      elsif Hash === expected && Hash === actual
-        return hashes_match?(expected, actual)
-      elsif actual == expected
-        return true
-      elsif expected.is_a?(Proc)
+      elsif expected.is_a?(Proc) # Opal - added this elsif clause
         return expected == actual
       end
+
+      return true if expected == actual
 
       begin
         expected === actual
