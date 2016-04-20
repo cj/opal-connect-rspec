@@ -1,3 +1,11 @@
+## MASTER
+
+*   New RSpec versions
+  * rspec-core - 3.3.4
+  * rspec-expectations - 3.4.0
+  * rspec-mocks - 3.4.1
+  * rspec-support - 3.4.1
+
 ## 0.6.0 - Under development
 
 *   Support for Opal 0.8/0.9 removed
