@@ -6,7 +6,7 @@ unless Dir['rspec{,-{core,expectations,mocks,support}}'].any?
 end
 
 # Opal master not released yet
-gem 'opal', git: 'https://github.com/opal/opal.git'
+gem 'opal', git: 'https://github.com/wied03/opal.git', branch: 'ancestor_fix'
 
 gem 'capybara'
 gem 'selenium-webdriver', require: false
